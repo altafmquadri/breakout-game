@@ -129,13 +129,35 @@ const moveBall = () => {
                 ) {
                     ball.dy *= -1
                     brick.visible = false
+                    increaseScore()
                 }
             }
         })
     })
-
+    //hit bottom lose
+    if(ball.y + ball.size > canvas.height) {
+        showAllBricks()
+        score = 0
+    }
 }
 
+//increase score
+const increaseScore = () => {
+    score++
+
+    if (score % (brickRowCount * brickRowCount) === 0) {
+        showAllBricks()
+    }
+}
+
+//make all bricks appear
+const showAllBricks = () => {
+    bricks.forEach(column => {
+        column.forEach(brick => {
+            brick.visible = true
+        })
+    })
+}
 
 const draw = () => {
     //clear canvas
