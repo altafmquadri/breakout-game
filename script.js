@@ -96,6 +96,47 @@ const movePaddle = () => {
     }
 }
 
+
+//move ball
+const moveBall = () => {
+    ball.x += ball.dx
+    ball.y += ball.dy
+
+    // wall collision x
+    if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
+        ball.dx *= -1
+    }
+    //wall collision y
+    if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
+        ball.dy *= -1
+    }
+    //paddle collision
+    if (ball.x - ball.size > paddle.x &&
+        ball.x + ball.size < paddle.x + paddle.w &&
+        ball.y + ball.size > paddle.y
+    ) {
+        ball.dy = -ball.speed
+    }
+
+    //brick collision
+    bricks.forEach(column => {
+        column.forEach(brick => {
+            if (brick.visible) {
+                if (ball.x - ball.size > brick.x && //left brick side
+                    ball.x + ball.size < brick.x + brick.w && //right brick side
+                    ball.y + ball.size > brick.y && //top brick side
+                    ball.y - ball.size < brick.y + brick.h //bottom brick side
+                ) {
+                    ball.dy *= -1
+                    brick.visible = false
+                }
+            }
+        })
+    })
+
+}
+
+
 const draw = () => {
     //clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -139,6 +180,7 @@ document.addEventListener('keyup', keyUp)
 
 const update = () => {
     movePaddle()
+    moveBall()
     draw()
     requestAnimationFrame(update)
 }
